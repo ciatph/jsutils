@@ -5,6 +5,8 @@ var _date = require('./scripts/date.js');
 _date.init(_utils);
 
 // Main process: Various JS testing
-var a = '2016/02/28';
+var a = '2018/11/30';
+
 g = _date.getmonthrange(a);
 _utils.log('start: ' + g.raw_date + '\nend: ' + g.end_date);
+
