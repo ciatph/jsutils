@@ -1,0 +1,24 @@
+{
+  "name": "jsnode",
+  "version": "1.0.0",
+  "description": "A NodeJS environment for testing JS snippets",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ciatph/jsnode.git"
+  },
+  "keywords": [
+    "nodejs",
+    "javascript",
+    "js"
+  ],
+  "author": "ciatph",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ciatph/jsnode/issues"
+  },
+  "homepage": "https://github.com/ciatph/jsnode#readme"
+}
