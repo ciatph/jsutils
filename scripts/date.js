@@ -44,8 +44,8 @@ DateObj.prototype.getmonthdiff = function(date1, date2){
  * {
  *      @first: [Integer] first day of week (Sunday)
  *      @last: [Integer] last day of week
- *      @start_date: JS Date() toUTCString Object of (computed) starting date
- *      @end_date: JS Date() toUTCString Object of the last day of the week (Saturday)
+ *      @start_date: [String] version of JS Date() toUTCString Object of (computed) starting date
+ *      @end_date: [String] version of JS Date() toUTCString Object of the last day of the week (Saturday)
  * }
  */
 DateObj.prototype.getmonthrange = function(endDate, numMonths){
