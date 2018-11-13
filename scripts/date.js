@@ -30,7 +30,7 @@ DateObj.prototype.isLeapYear = function(year){
 
 /**
  * Returns the number of days in a month considering the leap years
- * @param mo   [Integer] Month number (1-12)
+ * @param mo   [Integer] Month number (0-11)
  * @param year [Integer] Year, format: YYYY
  * @param date [String] Date format YYYY-mm-dd (optional)
  */
@@ -46,18 +46,18 @@ DateObj.prototype.getdaysinmonth = function(mo, year, date){
     }
 
     var months = {
-        1:"31",
-        2:"28",
-        3:"31",
-        4:"30",
-        5:"31",
-        6:"30",
+        0:"31",
+        1:"28",
+        2:"31",
+        3:"30",
+        4:"31",
+        5:"30",
+        6:"31",
         7:"31",
-        8:"31",
-        9:"30",
-        10:"31",
-        11:"30",
-        12:"31"
+        8:"30",
+        9:"31",
+        10:"30",
+        11:"31"
     };
 
     // Check if leap year
@@ -83,37 +83,44 @@ DateObj.prototype.getmonthdiff = function(date1, date2){
 
 
 /**
- * Returns the start and (final) end date range from a given (raw) end date.
- * The (final) end date is rounded to the LAST DAY of the week on which @endDate falls into
- * The start date is counted (30 * numMonths) from the (final) end date
- * @param { [String] date representing the end of a date range. Format: YYYY/mm/dd or (Year month, date) } endDate 
- * @param { [Integer] number of months to backtract from the endDate} numMonths 
- * @return JS Object with (computed) first date and last dat in Date() Format
+ * Returns the start and (final) end week date range from a given end date.
+ * The (final) end date is rounded to the LAST DAY of the week on which @paramDate falls into
+ * The start date is the 1st day of the week on which @paramDate falls into
+ * @param { [String] date representing the end of a date range. Format: YYYY/mm/dd or (Year month, date) } paramDate 
+ * @return JS Object with (computed) first and last date in [String] Date() Format
  * {
  *      @first: [Integer] first day of week (Sunday)
  *      @last: [Integer] last day of week
- *      @start_date: [String] version of JS Date() toUTCString Object of (computed) starting date
- *      @end_date: [String] version of JS Date() toUTCString Object of the last day of the week (Saturday)
+ *      @start_date: [String] version of JS Date() toUTCString version of (computed) starting date
+ *      @end_date: [String] version of JS Date() toUTCString version of the last day of the week (Saturday)
  * }
  */
-DateObj.prototype.getmonthrange = function(endDate, numMonths){
+DateObj.prototype.getweekrange = function(paramDate){
     // Check for valid input
-    if(!(this.utils.isValiInput(endDate) || this.utils.isValiInput(numMonths)))
+    if(!this.utils.isValiInput(paramDate))
         return null;
 
-    this.utils.log('--computing monthrange from ' + endDate);
+    this.utils.log('--computing monthrange from ' + paramDate);
 
-    var root = new Date(endDate);
-    var first = root.getDate() - root.getDay() + 1;
+    var root = new Date(paramDate);
+    var first = root.getDate() - root.getDay();// + 1;
     var last = first + 6;
 
     this.utils.log('first: ' + first + ', last: ' + last);
+    
+    var startdate = new Date(root.setDate(first));
+    var end = new Date(root.setDate(last));
+
+    //Adjust end's month, if days has backtracked to last month    
+    if(first < 0){
+        end.setMonth(end.getMonth() + 1);
+    }
 
     return {
         first: first,
         last: last,
-        raw_date: this.getdatefromutc(new Date(root.setDate(first)).toUTCString()),
-        end_date: this.getdatefromutc(new Date(root.setDate(last)).toUTCString()) 
+        start_date: this.getdatestring(startdate.toUTCString()),
+        end_date: this.getdatestring(end.toUTCString()) 
     };
 };
 
@@ -122,12 +129,13 @@ DateObj.prototype.getmonthrange = function(endDate, numMonths){
  * Returns the shorthand YYYY/mm/dd [String] format of a toUTCString()
  * @param { [String] Date() toUTCString format } date 
  */
-DateObj.prototype.getdatefromutc = function(date){
+DateObj.prototype.getdatestring = function(date){
     if(!this.utils.isValiInput(date))
         return;
     
     var convert = new Date(date);
-    return (convert.getUTCFullYear() + '/' + (convert.getUTCMonth() + 1) + '/' + convert.getUTCDate());
+    return convert.toLocaleDateString();
+    // return (convert.getUTCFullYear() + '/' + (convert.getUTCMonth() + 1) + '/' + convert.getUTCDate());
 };
 
 
@@ -173,7 +181,7 @@ DateObj.prototype.getdoymonth = function(date){
 
 
 /**
- * Get the numerical index (day of year) of a month in a year
+ * Get the numerical index (day of year) of a Date() format in a year
  * @param date [String] Date format "YYYY-mm-dd" or "YYYY/mm/dd"
  * Returns 1-365, null if invalid value
  */
@@ -184,6 +192,16 @@ DateObj.prototype.getdoy = function(date){
     var oneDay = 1000 * 60 * 60 * 24;
     var doy = Math.floor(difference / oneDay);
     return isNaN(doy) ? null : doy;
+};
+
+
+
+/**
+ * Creates a JS Date() object from given string date parameter
+ * @param { [String] old date, format YYYY/mm/dd } date 
+ */
+DateObj.prototype.createdate = function(date){
+    var newdate = new Date(date);
 };
 
 
